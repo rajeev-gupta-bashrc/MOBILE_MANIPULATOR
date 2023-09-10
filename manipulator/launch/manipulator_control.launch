@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <rosparam file="$(find manipulator)/config/manipulator_controller.yaml" command="load"/> 
+  <arg name="node_start_delay" default="0.0" />  
+
+  <node name="manipulator_controller_spawner" pkg="controller_manager" 
+    type="spawner" respawn="false" output="screen" ns="/manipulator" 
+    args="--namespace=/manipulator 
+            joint_state_controller
+            joint1_position
+            joint2_position
+            joint3_position
+            joint4_position
+            joint5_position
+            gripper_position_l
+            gripper_position_r "
+    launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' "/>
+
+  <node name="manipulator_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+	respawn="false" output="screen">
+    <remap from="/joint_states" to="/manipulator/joint_states" />
+    <param name="tf_prefix" value=""/>
+  </node>
+
+</launch> 
